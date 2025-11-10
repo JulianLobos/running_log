@@ -1,245 +1,378 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Running Log Dashboard</title>
     <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
     <!-- Bootstrap Icons -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css"
+    />
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
     <header class="bg-dark text-white text-center p-3 mb-4">
-        <h1><i class="bi bi-graph-up-arrow"></i> Running Log Dashboard</h1>
+      <h1><i class="bi bi-graph-up-arrow"></i> Running Log Dashboard</h1>
     </header>
 
     <main class="container-fluid">
-        <div class="row gx-4">
-            <!-- Columna Izquierda: Formulario y Acciones -->
-            <div class="col-lg-4">
-                <!-- Filtros -->
-                <div class="card shadow-sm mb-4">
-                    <div class="card-header">
-                        <h5 class="card-title mb-0"><i class="bi bi-funnel-fill"></i> Filtros</h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="mb-3">
-                            <label for="filterStartDate" class="form-label">Fecha Inicio</label>
-                            <input type="date" class="form-control" id="filterStartDate">
-                        </div>
-                        <div class="mb-3">
-                            <label for="filterEndDate" class="form-label">Fecha Fin</label>
-                            <input type="date" class="form-control" id="filterEndDate">
-                        </div>
-                        <button id="applyFilterBtn" class="btn btn-secondary w-100"><i class="bi bi-funnel"></i> Aplicar Filtro</button>
-                    </div>
-                </div>
-
-                <!-- Formulario para Añadir Carrera -->
-                <div class="card shadow-sm mb-4">
-                    <div class="card-header">
-                        <h5 class="card-title mb-0"><i class="bi bi-plus-circle-fill"></i> Añadir Nueva Carrera</h5>
-                    </div>
-                    <div class="card-body">
-                        <form id="runForm">
-                            <div class="mb-3">
-                                <label for="runDate" class="form-label">Fecha</label>
-                                <input type="date" class="form-control" id="runDate" required>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-4 mb-3">
-                                    <label for="runDistance" class="form-label">Distancia (km)</label>
-                                    <input type="number" class="form-control" id="runDistance" step="0.01" min="0" placeholder="Ej: 5.25" required>
-                                </div>
-                                <div class="col-md-4 mb-3">
-                                    <label for="runTime" class="form-label">Tiempo</label>
-                                    <input type="text" class="form-control" id="runTime" placeholder="HH:MM:SS" required>
-                                </div>
-                                <div class="col-md-4 mb-3">
-                                    <label for="runCalories" class="form-label">Calorías (kcal)</label>
-                                    <input type="number" class="form-control" id="runCalories" min="0" placeholder="Ej: 350">
-                                </div>
-                            </div>
-                            <div class="mb-3">
-                                <label for="runType" class="form-label">Tipo de Carrera</label>
-                                <select id="runType" class="form-select">
-                                    <option value="Entrenamiento" selected>Entrenamiento</option>
-                                    <option value="Carrera">Carrera</option>
-                                    <option value="Intervalos">Intervalos</option>
-                                    <option value="Trail">Trail</option>
-                                    <option value="Recuperación">Recuperación</option>
-                                </select>
-                            </div>
-                            <div class="mb-3">
-                                <label for="runFeeling" class="form-label">Sensaciones</label>
-                                <select id="runFeeling" class="form-select">
-                                    <option value="5">Excelente</option>
-                                    <option value="4">Buena</option>
-                                    <option value="3" selected>Normal</option>
-                                    <option value="2">Regular</option>
-                                    <option value="1">Mala</option>
-                                </select>
-                            </div>
-                            <div class="mb-3">
-                                <label for="runNotes" class="form-label">Notas (Opcional)</label>
-                                <textarea class="form-control" id="runNotes" rows="2" placeholder="Detalles sobre la ruta, el clima, etc."></textarea>
-                            </div>
-                            <button type="submit" class="btn btn-primary w-100"><i class="bi bi-check-lg"></i> Guardar Carrera</button>
-                        </form>
-                    </div>
-                </div>
-
-                <!-- Acciones de Datos -->
-                <div class="card shadow-sm">
-                    <div class="card-header">
-                        <h5 class="card-title mb-0"><i class="bi bi-database-fill-gear"></i> Gestión de Datos</h5>
-                    </div>
-                    <div class="card-body">
-                        <p class="card-text">Guarda o carga tus datos en formato JSON.</p>
-                        <div class="d-grid gap-2">
-                            <button id="exportData" class="btn btn-success"><i class="bi bi-download"></i> Exportar Datos (JSON)</button>
-                            <label for="importData" class="btn btn-info"><i class="bi bi-upload"></i> Importar Datos (JSON)</label>
-                            <input type="file" id="importData" class="d-none" accept=".json">
-                        </div>
-                    </div>
-                </div>
+      <div class="row gx-4">
+        <!-- Columna Izquierda: Formulario y Acciones -->
+        <div class="col-lg-4">
+          <!-- Filtros -->
+          <div class="card shadow-sm mb-4">
+            <div class="card-header">
+              <h5 class="card-title mb-0">
+                <i class="bi bi-funnel-fill"></i> Filtros
+              </h5>
             </div>
-
-            <!-- Columna Derecha: Gráficos e Historial -->
-            <div class="col-lg-8">
-                <!-- Gráficos -->
-                <div class="card shadow-sm mb-4">
-                    <div class="card-header">
-                        <h5 class="card-title mb-0"><i class="bi bi-bar-chart-line-fill"></i> Estadísticas Visuales</h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <canvas id="distanceChart"></canvas>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <canvas id="paceChart"></canvas>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-12 mb-3">
-                                <canvas id="caloriesChart"></canvas>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Top 5 Carreras por Distancia -->
-                <div class="card shadow-sm mb-4">
-                    <div class="card-header">
-                        <h5 class="card-title mb-0"><i class="bi bi-trophy-fill"></i> Top 5 Carreras por Distancia</h5>
-                    </div>
-                    <div class="card-body">
-                        <ul id="topRunsList" class="list-group list-group-flush">
-                            <!-- Top runs will be inserted here dynamically -->
-                        </ul>
-                    </div>
-                </div>
-
-                <!-- Historial de Carreras -->
-                <div class="card shadow-sm">
-                    <div class="card-header">
-                        <h5 class="card-title mb-0"><i class="bi bi-list-ol"></i> Historial de Carreras</h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="table-responsive">
-                            <table class="table table-striped table-hover">
-                                <thead class="table-dark">
-                                    <tr>
-                                        <th>Fecha</th>
-                                        <th>Distancia</th>
-                                        <th>Tiempo</th>
-                                        <th>Ritmo (min/km)</th>
-                                        <th>Calorías</th>
-                                        <th>Tipo</th>
-                                        <th>Sensación</th>
-                                        <th>Acciones</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="runHistoryBody">
-                                    <!-- Las filas se insertarán aquí dinámicamente -->
-                                </tbody>
-                            </table>
-                        </div>
-                        <div id="paginationControls" class="mt-3 d-flex justify-content-center">
-                            <!-- Los controles de paginación se insertarán aquí dinámicamente -->
-                        </div>
-                    </div>
-                </div>
+            <div class="card-body">
+              <div class="mb-3">
+                <label for="filterStartDate" class="form-label"
+                  >Fecha Inicio</label
+                >
+                <input type="date" class="form-control" id="filterStartDate" />
+              </div>
+              <div class="mb-3">
+                <label for="filterEndDate" class="form-label">Fecha Fin</label>
+                <input type="date" class="form-control" id="filterEndDate" />
+              </div>
+              <button id="applyFilterBtn" class="btn btn-secondary w-100">
+                <i class="bi bi-funnel"></i> Aplicar Filtro
+              </button>
             </div>
+          </div>
+
+          <!-- Formulario para Añadir Carrera -->
+          <div class="card shadow-sm mb-4">
+            <div class="card-header">
+              <h5 class="card-title mb-0">
+                <i class="bi bi-plus-circle-fill"></i> Añadir Nueva Carrera
+              </h5>
+            </div>
+            <div class="card-body">
+              <form id="runForm">
+                <div class="mb-3">
+                  <label for="runDate" class="form-label">Fecha</label>
+                  <input
+                    type="date"
+                    class="form-control"
+                    id="runDate"
+                    required
+                  />
+                </div>
+                <div class="row">
+                  <div class="col-md-4 mb-3">
+                    <label for="runDistance" class="form-label"
+                      >Distancia (km)</label
+                    >
+                    <input
+                      type="number"
+                      class="form-control"
+                      id="runDistance"
+                      step="0.01"
+                      min="0"
+                      placeholder="Ej: 5.25"
+                      required
+                    />
+                  </div>
+                  <div class="col-md-4 mb-3">
+                    <label for="runTime" class="form-label">Tiempo</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="runTime"
+                      placeholder="HH:MM:SS"
+                      required
+                    />
+                  </div>
+                  <div class="col-md-4 mb-3">
+                    <label for="runCalories" class="form-label"
+                      >Calorías (kcal)</label
+                    >
+                    <input
+                      type="number"
+                      class="form-control"
+                      id="runCalories"
+                      min="0"
+                      placeholder="Ej: 350"
+                    />
+                  </div>
+                </div>
+                <div class="mb-3">
+                  <label for="runType" class="form-label"
+                    >Tipo de Carrera</label
+                  >
+                  <select id="runType" class="form-select">
+                    <option value="Entrenamiento" selected>
+                      Entrenamiento
+                    </option>
+                    <option value="Carrera">Carrera</option>
+                    <option value="Intervalos">Intervalos</option>
+                    <option value="Trail">Trail</option>
+                    <option value="Recuperación">Recuperación</option>
+                  </select>
+                </div>
+                <div class="mb-3">
+                  <label for="runFeeling" class="form-label">Sensaciones</label>
+                  <select id="runFeeling" class="form-select">
+                    <option value="5">Excelente</option>
+                    <option value="4">Buena</option>
+                    <option value="3" selected>Normal</option>
+                    <option value="2">Regular</option>
+                    <option value="1">Mala</option>
+                  </select>
+                </div>
+                <div class="mb-3">
+                  <label for="runNotes" class="form-label"
+                    >Notas (Opcional)</label
+                  >
+                  <textarea
+                    class="form-control"
+                    id="runNotes"
+                    rows="2"
+                    placeholder="Detalles sobre la ruta, el clima, etc."
+                  ></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary w-100">
+                  <i class="bi bi-check-lg"></i> Guardar Carrera
+                </button>
+              </form>
+            </div>
+          </div>
+
+          <!-- Acciones de Datos -->
+          <div class="card shadow-sm">
+            <div class="card-header">
+              <h5 class="card-title mb-0">
+                <i class="bi bi-database-fill-gear"></i> Gestión de Datos
+              </h5>
+            </div>
+            <div class="card-body">
+              <p class="card-text">Guarda o carga tus datos en formato JSON.</p>
+              <div class="d-grid gap-2">
+                <button id="exportData" class="btn btn-success">
+                  <i class="bi bi-download"></i> Exportar Datos (JSON)
+                </button>
+                <label for="importData" class="btn btn-info"
+                  ><i class="bi bi-upload"></i> Importar Datos (JSON)</label
+                >
+                <input
+                  type="file"
+                  id="importData"
+                  class="d-none"
+                  accept=".json"
+                />
+              </div>
+            </div>
+          </div>
         </div>
+
+        <!-- Columna Derecha: Gráficos e Historial -->
+        <div class="col-lg-8">
+          <!-- Gráficos -->
+          <div class="card shadow-sm mb-4">
+            <div class="card-header">
+              <h5 class="card-title mb-0">
+                <i class="bi bi-bar-chart-line-fill"></i> Estadísticas Visuales
+              </h5>
+            </div>
+            <div class="card-body">
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <canvas id="distanceChart"></canvas>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <canvas id="paceChart"></canvas>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-12 mb-3">
+                  <canvas id="caloriesChart"></canvas>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Top 5 Carreras por Distancia -->
+          <div class="card shadow-sm mb-4">
+            <div class="card-header">
+              <h5 class="card-title mb-0">
+                <i class="bi bi-trophy-fill"></i> Top 5 Carreras por Distancia
+              </h5>
+            </div>
+            <div class="card-body">
+              <ul id="topRunsList" class="list-group list-group-flush">
+                <!-- Top runs will be inserted here dynamically -->
+              </ul>
+            </div>
+          </div>
+
+          <!-- Historial de Carreras -->
+          <div class="card shadow-sm">
+            <div class="card-header">
+              <h5 class="card-title mb-0">
+                <i class="bi bi-list-ol"></i> Historial de Carreras
+              </h5>
+            </div>
+            <div class="card-body">
+              <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                  <thead class="table-dark">
+                    <tr>
+                      <th>Fecha</th>
+                      <th>Distancia</th>
+                      <th>Tiempo</th>
+                      <th>Ritmo (min/km)</th>
+                      <th>Calorías</th>
+                      <th>Tipo</th>
+                      <th>Sensación</th>
+                      <th>Acciones</th>
+                    </tr>
+                  </thead>
+                  <tbody id="runHistoryBody">
+                    <!-- Las filas se insertarán aquí dinámicamente -->
+                  </tbody>
+                </table>
+              </div>
+              <div
+                id="paginationControls"
+                class="mt-3 d-flex justify-content-center"
+              >
+                <!-- Los controles de paginación se insertarán aquí dinámicamente -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </main>
 
     <!-- Edit Run Modal -->
-    <div class="modal fade" id="editRunModal" tabindex="-1" aria-labelledby="editRunModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="editRunModalLabel"><i class="bi bi-pencil-square"></i> Editar Carrera</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    <div
+      class="modal fade"
+      id="editRunModal"
+      tabindex="-1"
+      aria-labelledby="editRunModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="editRunModalLabel">
+              <i class="bi bi-pencil-square"></i> Editar Carrera
+            </h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <form id="editRunForm">
+              <input type="hidden" id="editRunId" />
+              <div class="mb-3">
+                <label for="editRunDate" class="form-label">Fecha</label>
+                <input
+                  type="date"
+                  class="form-control"
+                  id="editRunDate"
+                  required
+                />
+              </div>
+              <div class="row">
+                <div class="col-md-4 mb-3">
+                  <label for="editRunDistance" class="form-label"
+                    >Distancia (km)</label
+                  >
+                  <input
+                    type="number"
+                    class="form-control"
+                    id="editRunDistance"
+                    step="0.01"
+                    min="0"
+                    required
+                  />
                 </div>
-                <div class="modal-body">
-                    <form id="editRunForm">
-                        <input type="hidden" id="editRunId">
-                        <div class="mb-3">
-                            <label for="editRunDate" class="form-label">Fecha</label>
-                            <input type="date" class="form-control" id="editRunDate" required>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-4 mb-3">
-                                <label for="editRunDistance" class="form-label">Distancia (km)</label>
-                                <input type="number" class="form-control" id="editRunDistance" step="0.01" min="0" required>
-                            </div>
-                            <div class="col-md-4 mb-3">
-                                <label for="editRunTime" class="form-label">Tiempo</label>
-                                <input type="text" class="form-control" id="editRunTime" placeholder="HH:MM:SS" required>
-                            </div>
-                            <div class="col-md-4 mb-3">
-                                <label for="editRunCalories" class="form-label">Calorías (kcal)</label>
-                                <input type="number" class="form-control" id="editRunCalories" min="0">
-                            </div>
-                        </div>
-                        <div class="mb-3">
-                            <label for="editRunType" class="form-label">Tipo de Carrera</label>
-                            <select id="editRunType" class="form-select">
-                                <option value="Entrenamiento">Entrenamiento</option>
-                                <option value="Carrera">Carrera</option>
-                                <option value="Intervalos">Intervalos</option>
-                                <option value="Trail">Trail</option>
-                                <option value="Recuperación">Recuperación</option>
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label for="editRunFeeling" class="form-label">Sensaciones</label>
-                            <select id="editRunFeeling" class="form-select">
-                                <option value="5">Excelente</option>
-                                <option value="4">Buena</option>
-                                <option value="3">Normal</option>
-                                <option value="2">Regular</option>
-                                <option value="1">Mala</option>
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label for="editRunNotes" class="form-label">Notas (Opcional)</label>
-                            <textarea class="form-control" id="editRunNotes" rows="2"></textarea>
-                        </div>
-                        <div class="modal-footer pb-0">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                            <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Guardar Cambios</button>
-                        </div>
-                    </form>
+                <div class="col-md-4 mb-3">
+                  <label for="editRunTime" class="form-label">Tiempo</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="editRunTime"
+                    placeholder="HH:MM:SS"
+                    required
+                  />
                 </div>
-            </div>
+                <div class="col-md-4 mb-3">
+                  <label for="editRunCalories" class="form-label"
+                    >Calorías (kcal)</label
+                  >
+                  <input
+                    type="number"
+                    class="form-control"
+                    id="editRunCalories"
+                    min="0"
+                  />
+                </div>
+              </div>
+              <div class="mb-3">
+                <label for="editRunType" class="form-label"
+                  >Tipo de Carrera</label
+                >
+                <select id="editRunType" class="form-select">
+                  <option value="Entrenamiento">Entrenamiento</option>
+                  <option value="Carrera">Carrera</option>
+                  <option value="Intervalos">Intervalos</option>
+                  <option value="Trail">Trail</option>
+                  <option value="Recuperación">Recuperación</option>
+                </select>
+              </div>
+              <div class="mb-3">
+                <label for="editRunFeeling" class="form-label"
+                  >Sensaciones</label
+                >
+                <select id="editRunFeeling" class="form-select">
+                  <option value="5">Excelente</option>
+                  <option value="4">Buena</option>
+                  <option value="3">Normal</option>
+                  <option value="2">Regular</option>
+                  <option value="1">Mala</option>
+                </select>
+              </div>
+              <div class="mb-3">
+                <label for="editRunNotes" class="form-label"
+                  >Notas (Opcional)</label
+                >
+                <textarea
+                  class="form-control"
+                  id="editRunNotes"
+                  rows="2"
+                ></textarea>
+              </div>
+              <div class="modal-footer pb-0">
+                <button
+                  type="button"
+                  class="btn btn-secondary"
+                  data-bs-dismiss="modal"
+                >
+                  Cancelar
+                </button>
+                <button type="submit" class="btn btn-primary">
+                  <i class="bi bi-save"></i> Guardar Cambios
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
+      </div>
     </div>
 
     <!-- Bootstrap JS Bundle -->
@@ -248,5 +381,13 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <!-- Custom JS -->
     <script src="script.js"></script>
-</body>
+
+    <footer class="footer mt-auto py-3 bg-light">
+      <div class="container text-center">
+        <p class="text-muted mb-0">
+          © 2025 Running Log Dashboard. Todos los derechos reservados.
+        </p>
+      </div>
+    </footer>
+  </body>
 </html>

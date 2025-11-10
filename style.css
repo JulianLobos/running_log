@@ -79,3 +79,18 @@ header h1 i {
     vertical-align: middle;
     margin-right: 10px;
 }
+
+/* Ajuste para botones de acción en la tabla */
+.table tbody .btn {
+    width: 32px; /* Ancho fijo */
+    height: 32px; /* Alto fijo */
+    padding: 0; /* Eliminar padding para que el tamaño sea exacto */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 5px; /* Espacio entre botones */
+}
+
+.table tbody .btn:first-child {
+    margin-left: 0; /* No aplicar margen al primer botón */
+}
