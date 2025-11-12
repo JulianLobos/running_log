@@ -10,6 +10,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const filterEndDateInput = document.getElementById('filterEndDate');
     const applyFilterBtn = document.getElementById('applyFilterBtn');
     const paginationControls = document.getElementById('paginationControls');
+    const calendarContainer = document.getElementById('calendar');
+    const streakCounter = document.getElementById('streak-counter');
 
     // Gráficos de Chart.js
     let distanceChart, paceChart, caloriesChart;
@@ -62,6 +64,7 @@ document.addEventListener('DOMContentLoaded', () => {
         renderCharts();
         renderTopRuns();
         renderPaginationControls();
+        updateCalendarAndStreak();
     }
 
     /**
@@ -343,6 +346,152 @@ document.addEventListener('DOMContentLoaded', () => {
         ul.appendChild(nextLi);
 
         paginationControls.appendChild(ul);
+    }
+
+
+    /**
+     * Actualiza el calendario y el contador de rachas.
+     */
+    function updateCalendarAndStreak() {
+        const today = new Date();
+        const currentYear = today.getFullYear();
+        const currentMonth = today.getMonth();
+
+        // Extraer solo las fechas de las carreras
+        const runDates = runs.map(run => run.date);
+
+        calculateStreak(runDates);
+        renderCalendar(currentYear, currentMonth, new Set(runDates));
+    }
+
+    /**
+     * Calcula la racha actual y la más larga y actualiza el DOM.
+     * @param {string[]} runDates - Un array de strings de fecha ('YYYY-MM-DD').
+     */
+    function calculateStreak(runDates) {
+        if (runDates.length === 0) {
+            streakCounter.innerHTML = `
+                <span class="streak-icon">🔥</span>
+                Racha actual: <span class="streak-number">0</span> días
+            `;
+            return;
+        }
+
+        const uniqueDates = [...new Set(runDates)].map(dateStr => {
+            const [year, month, day] = dateStr.split('-').map(Number);
+            return new Date(year, month - 1, day);
+        }).sort((a, b) => a - b);
+
+        let longestStreak = 0;
+        let currentStreak = 0;
+        let tempStreak = 0;
+
+        if (uniqueDates.length > 0) {
+            tempStreak = 1;
+            longestStreak = 1;
+        }
+
+        for (let i = 1; i < uniqueDates.length; i++) {
+            const diff = (uniqueDates[i] - uniqueDates[i - 1]) / (1000 * 60 * 60 * 24);
+            if (diff === 1) {
+                tempStreak++;
+            } else {
+                tempStreak = 1;
+            }
+            if (tempStreak > longestStreak) {
+                longestStreak = tempStreak;
+            }
+        }
+
+        // Calcular racha actual (terminando hoy o ayer)
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const yesterday = new Date(today);
+        yesterday.setDate(yesterday.getDate() - 1);
+
+        const lastRunDate = uniqueDates[uniqueDates.length - 1];
+        
+        if (lastRunDate && (lastRunDate.getTime() === today.getTime() || lastRunDate.getTime() === yesterday.getTime())) {
+            currentStreak = 1;
+            for (let i = uniqueDates.length - 2; i >= 0; i--) {
+                const diff = (uniqueDates[i+1] - uniqueDates[i]) / (1000 * 60 * 60 * 24);
+                if (diff === 1) {
+                    currentStreak++;
+                } else {
+                    break;
+                }
+            }
+        } else {
+            currentStreak = 0;
+        }
+
+        streakCounter.innerHTML = `
+            <span class="streak-icon">🔥</span>
+            Racha actual: <span class="streak-number">${currentStreak}</span> días (Máx: ${longestStreak})
+        `;
+    }
+
+    /**
+     * Renderiza el calendario del mes actual.
+     * @param {number} year - El año a renderizar.
+     * @param {number} month - El mes a renderizar (0-11).
+     * @param {Set<string>} activeDays - Un Set con las fechas de las carreras ('YYYY-MM-DD').
+     */
+    function renderCalendar(year, month, activeDays) {
+        calendarContainer.innerHTML = '';
+
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        const firstDayOfMonth = new Date(year, month, 1);
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+        const monthName = firstDayOfMonth.toLocaleString('es-ES', { month: 'long' });
+
+        // El día de la semana del primer día del mes (0=Domingo, 1=Lunes, ..., 6=Sábado)
+        // Ajustamos para que la semana empiece en Lunes (1) y termine en Domingo (0)
+        let startDayOfWeek = firstDayOfMonth.getDay();
+        if (startDayOfWeek === 0) startDayOfWeek = 7; // Convertir Domingo a 7 para que esté al final
+
+        // Header del calendario
+        const header = document.createElement('div');
+        header.className = 'calendar-header';
+        header.textContent = `${monthName.charAt(0).toUpperCase() + monthName.slice(1)} ${year}`;
+        calendarContainer.appendChild(header);
+
+        // Días de la semana (L, M, X, J, V, S, D)
+        const weekDays = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
+        weekDays.forEach(day => {
+            const dayHeader = document.createElement('div');
+            dayHeader.className = 'calendar-day-header';
+            dayHeader.textContent = day;
+            calendarContainer.appendChild(dayHeader);
+        });
+
+        // Espacios vacíos al inicio del mes
+        for (let i = 1; i < startDayOfWeek; i++) {
+            const emptyCell = document.createElement('div');
+            emptyCell.className = 'calendar-day empty';
+            calendarContainer.appendChild(emptyCell);
+        }
+
+        // Días del mes
+        for (let day = 1; day <= daysInMonth; day++) {
+            const dayCell = document.createElement('div');
+            const currentDate = new Date(year, month, day);
+            const dateString = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+            
+            dayCell.textContent = day;
+            dayCell.className = 'calendar-day';
+
+            if (activeDays.has(dateString)) {
+                dayCell.classList.add('day-active');
+            }
+            if (currentDate.getTime() === today.getTime()) {
+                dayCell.classList.add('day-current');
+            }
+            
+            calendarContainer.appendChild(dayCell);
+        }
     }
 
 

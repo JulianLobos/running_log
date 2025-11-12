@@ -94,3 +94,69 @@ header h1 i {
 .table tbody .btn:first-child {
     margin-left: 0; /* No aplicar margen al primer botón */
 }
+
+/* --- CALENDARIO Y STREAK --- */
+
+#calendar {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 5px;
+    text-align: center;
+}
+
+.calendar-header {
+    grid-column: 1 / -1;
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.calendar-day-header {
+    font-weight: bold;
+    font-size: 0.8rem;
+    color: #6c757d;
+}
+
+.calendar-day {
+    padding: 8px 4px;
+    border-radius: 50%;
+    font-size: 0.9rem;
+    aspect-ratio: 1 / 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f8f9fa;
+    border: 1px solid #e9ecef;
+}
+
+.calendar-day.day-active {
+    background-color: #0d6efd;
+    color: white;
+    font-weight: bold;
+    border-color: #0a58ca;
+}
+
+.calendar-day.day-current {
+    box-shadow: 0 0 0 2px #0d6efd;
+}
+
+.calendar-day.empty {
+    background-color: transparent;
+    border: none;
+}
+
+#streak-counter {
+    font-size: 1.1rem;
+}
+
+#streak-counter .streak-icon {
+    color: #ff9800;
+    font-size: 1.5rem;
+    vertical-align: middle;
+    margin-right: 8px;
+}
+
+#streak-counter .streak-number {
+    font-weight: bold;
+    font-size: 1.4rem;
+}
